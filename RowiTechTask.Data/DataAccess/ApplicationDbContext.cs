@@ -1,13 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using RowiTechTask.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RowiTechTask.Models;
 
 namespace RowiTechTask.Data.DataAccess
 {
@@ -33,8 +24,8 @@ namespace RowiTechTask.Data.DataAccess
                 .HasMany(e => e.Tasks)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
-                .IsRequired();
-
+                .IsRequired(false);
+            
             modelBuilder.Entity<Models.Task>()
                 .HasMany(e => e.Tags)
                 .WithMany(e => e.Tasks);
@@ -66,6 +57,33 @@ namespace RowiTechTask.Data.DataAccess
                 new Tag { Id = 3, TagName = "JavaScript" },
                 new Tag { Id = 4, TagName = "Asp.NET" }
                 );
+            modelBuilder.Entity<Models.Task>().HasData(
+                new Models.Task
+                {
+                    Id = 1,
+                    CreatedDate = DateTime.Now,
+                    Amount = 2000,
+                    Duration = TimeSpan.FromDays(14),
+                    ExpirationDate = DateTime.Now + TimeSpan.FromDays(14),
+                    LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them",
+                    ShortDescription = "Marketplace with tasks",
+                    PayTypeId = 1,
+                    StateId = 1
+                },
+                new Models.Task
+                {
+                    Id = 2,
+                    CreatedDate = DateTime.Now - TimeSpan.FromDays(1),
+                    Amount = 5000,
+                    Duration = TimeSpan.FromDays(14),
+                    ExpirationDate = DateTime.Now + TimeSpan.FromDays(13),
+                    LongDescription = "My room is a mess! I need somebody to clean it up, because i won't handle it myself... You will get paid tho",
+                    ShortDescription = "I need you to clean my room",
+                    PayTypeId = 2,
+                    StateId = 2
+                }
+                );
+            
         }
     }
 }

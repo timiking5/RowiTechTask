@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RowiTechTask.Models;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace RowiTechTask.Controllers
 {

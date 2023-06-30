@@ -20,3 +20,100 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* ----------------- */
+/* Task card styling */
+/* ----------------- */
+
+
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+.task-container {
+    padding-inline: 25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+}
+
+.task-card {
+    width: 450px;
+    margin: 10px;
+    border: 1px solid rgba(0, 0, 0, .3);
+    ;
+    border-radius: 10px;
+}
+
+    .task-card:hover {
+        box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+        border: 0px;
+    }
+
+    .task-card > * {
+        padding: 5px 15px;
+    }
+
+.status {
+    
+    border-radius: 10px;
+    padding: 3px;
+    align-items: center;
+    color: white;
+}
+
+.new {
+    background-color: blue;
+}
+
+.in-work {
+    background-color: rgb(235, 219, 52);
+}
+
+.failed {
+    background-color: rgb(227, 71, 32);
+}
+
+.task-title {
+    font-size: 24px;
+    font-weight: bold;
+    padding-top: 15px;
+}
+
+    .task-title > a {
+        text-decoration: none;
+        color: black;
+    }
+
+.payment-meta {
+    display: inline;
+    opacity: 0.5;
+}
+
+.payment {
+    word-spacing: 5px;
+}
+
+.tag {
+    background-color: rgb(228, 235, 228);
+    font-size: 18px;
+    border-radius: 7px;
+    padding: 2px;
+}
+
+.tags {
+    margin-bottom: 10px;
+}
+
+.task-details {
+    background-color: rgb(21, 148, 21);
+    color: white;
+    padding: 3px;
+    margin: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.extra-div {
+    height: 10px;
+}

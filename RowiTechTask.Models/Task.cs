@@ -1,5 +1,6 @@
 ﻿global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
+global using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace RowiTechTask.Models
 {
@@ -30,9 +31,12 @@ namespace RowiTechTask.Models
         /// Task has a single user working on it
         /// But User has multiple tasks he can work on
         /// </summary>
-        public int UserId { get; set; }
+        [ValidateNever]
+        public int? UserId { get; set; }
         [ForeignKey("UserId")]
+        [ValidateNever]
         public User User { get; set; }
+        [ValidateNever]
         public ICollection<Tag> Tags { get; set; }
     }
 }

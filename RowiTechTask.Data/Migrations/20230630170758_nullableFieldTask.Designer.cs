@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RowiTechTask.Data.DataAccess;
 
@@ -11,9 +12,11 @@ using RowiTechTask.Data.DataAccess;
 namespace RowiTechTask.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230630170758_nullableFieldTask")]
+    partial class nullableFieldTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,32 +249,6 @@ namespace RowiTechTask.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Amount = 2000m,
-                            CreatedDate = new DateTime(2023, 6, 30, 20, 8, 28, 211, DateTimeKind.Local).AddTicks(3839),
-                            Duration = new TimeSpan(14, 0, 0, 0, 0),
-                            ExpirationDate = new DateTime(2023, 7, 14, 20, 8, 28, 211, DateTimeKind.Local).AddTicks(3852),
-                            LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them",
-                            PayTypeId = 1,
-                            ShortDescription = "Marketplace with tasks",
-                            StateId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Amount = 5000m,
-                            CreatedDate = new DateTime(2023, 6, 29, 20, 8, 28, 211, DateTimeKind.Local).AddTicks(3855),
-                            Duration = new TimeSpan(14, 0, 0, 0, 0),
-                            ExpirationDate = new DateTime(2023, 7, 13, 20, 8, 28, 211, DateTimeKind.Local).AddTicks(3856),
-                            LongDescription = "My room is a mess! I need somebody to clean it up, because i won't handle it myself... You will get paid tho",
-                            PayTypeId = 2,
-                            ShortDescription = "I need you to clean my room",
-                            StateId = 2
-                        });
                 });
 
             modelBuilder.Entity("RowiTechTask.Models.User", b =>
