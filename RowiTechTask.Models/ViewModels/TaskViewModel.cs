@@ -1,13 +1,16 @@
-﻿using System.Diagnostics;
+﻿global using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
 
 namespace RowiTechTask.Models.ViewModels
 {
     public class TaskViewModel
     {
-
         public Task Task { get; set; }
-        public List<PayType> PayTypes { get; set; }
-        public List<State> States { get; set; }
-        public List<Tag> Tags { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem> PayTypes { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem> Tags { get; set; }
+        [DisplayName("Tags")]
+        public int[] tagIds { get; set; }
     }
 }

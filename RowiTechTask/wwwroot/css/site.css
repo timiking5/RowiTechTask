@@ -31,7 +31,6 @@ body {
 }
 
 .task-container {
-    padding-inline: 25rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     place-items: center;
@@ -116,4 +115,9 @@ body {
 
 .extra-div {
     height: 10px;
+}
+
+a.disable {
+    pointer-events: none;
+    cursor: default;
 }

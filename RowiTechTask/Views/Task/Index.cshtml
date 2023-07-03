@@ -1,6 +1,15 @@
 ﻿@model List<RowiTechTask.Models.Task>
 
 
+<div class="row pt-4 pb-3">
+    <div class="col-6">
+    </div>
+    <div class="col-6 text-end">
+        <a asp-controller="Task" asp-action="UpSert" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Task
+        </a>
+    </div>
+</div>
 <div class="task-container">
     @foreach (var task in Model)
     {
@@ -23,21 +32,30 @@
         </div>
             @if (task.PayType.PayTypeName == "Hourly")
             {
-                <div class="payment">@task.Amount / Hour</div>
+                <div class="payment">@string.Concat(@task.Amount, " ₽") / Hour</div>
             }
             else
             {
-                <div class="payment">@task.Amount</div>
+                <div class="payment">@string.Concat(@task.Amount, " ₽")</div>
             }
-            <p class="long-description">@task.LongDescription</p>
+            <p class="long-description">@TextFormation.TextToFormat(@task.LongDescription)</p>
         <div class="tags">
                 @foreach (var tag in task.Tags)
                 {
                     <span class="tag">@tag.TagName</span>
                 }
             </div>
-            <a asp-controller="Tag" asp-action="Details" asp-route-id="@task.Id" class="task-details">See details</a>
-        <div class="extra-div"></div>
+            @if (task.State.StateName == "New")
+            {
+                <a asp-controller="Task" asp-action="Upsert" asp-route-id="@task.Id" class="btn btn-primary mx-3"><i class="bi bi-pencil-square"></i> Edit</a>
+                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-danger mx-3"><i class="bi bi-trash3"></i> Delete</a>
+            }
+            else
+            {
+                <a asp-controller="Task" asp-action="Upsert" asp-route-id="@task.Id" class="btn btn-primary mx-3 disabled"><i class="bi bi-pencil-square"></i> Edit</a>
+                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-danger mx-3 disabled"><i class="bi bi-trash3"></i> Delete</a>
+            }
+            <div class="extra-div"></div>
     </div>
     }
 </div>

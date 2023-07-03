@@ -1,19 +1,25 @@
-﻿using System.Diagnostics;
+﻿
+using System.Diagnostics;
 
 namespace RowiTechTask.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var taskList = _unitOfWork.Task.GetAll("PayType,State,Tags");
+            return View(taskList);
+
         }
 
         public IActionResult Privacy()

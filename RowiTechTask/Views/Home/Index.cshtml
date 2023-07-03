@@ -1,3 +1,42 @@
 ﻿@model IEnumerable<RowiTechTask.Models.Task>
-
+<div class="task-container">
+    @foreach (var task in Model)
+    {
+        <div class="task-card">
+            <div class="task-title"><a href="#">@task.ShortDescription</a></div>
+            <div class="meta">
+                @if (@task.State.StateName == "New")
+                {
+                    <span class="status new">@task.State.StateName</span>
+                }
+                else if (@task.State.StateName == "In Process" || @task.State.StateName == "On Review" || task.State.StateName == "Needs Rework")
+                {
+                    <span class="status in-work">@task.State.StateName</span>
+                }
+                else
+                {
+                    <span class="status failed">@task.State.StateName</span>
+                }
+                <div class="payment-meta"> @task.PayType.PayTypeName @task.CreatedDate.Date</div>
+            </div>
+            @if (task.PayType.PayTypeName == "Hourly")
+            {
+                <div class="payment">@string.Concat(@task.Amount, " ₽") / Hour</div>
+            }
+            else
+            {
+                <div class="payment">@string.Concat(@task.Amount, " ₽")</div>
+            }
+            <p class="long-description">@TextFormation.TextToFormat(@task.LongDescription)</p>
+            <div class="tags">
+                @foreach (var tag in task.Tags)
+                {
+                    <span class="tag">@tag.TagName</span>
+                }
+            </div>
+            <a asp-controller="Tag" asp-action="Details" asp-route-id="@task.Id" class="task-details">See details</a>
+            <div class="extra-div"></div>
+        </div>
+    }
+</div>
 
