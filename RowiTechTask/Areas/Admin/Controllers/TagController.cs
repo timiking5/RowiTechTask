@@ -1,9 +1,14 @@
 ﻿global using RowiTechTask.Models;
 global using Microsoft.AspNetCore.Mvc;
 global using RowiTechTask.Data.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using RowiTechTask.Utility;
+using System.Data;
 
-namespace RowiTechTask.Controllers
+namespace RowiTechTask.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
     public class TagController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

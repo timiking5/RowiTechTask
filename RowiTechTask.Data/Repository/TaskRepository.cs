@@ -7,6 +7,7 @@
         public void Update(Models.Task task)
         {
             // TODO - Fix TagTask updating
+            task.Tags = null;
             _dbContext.Tasks.Update(task);
             _dbContext.SaveChanges();
         }

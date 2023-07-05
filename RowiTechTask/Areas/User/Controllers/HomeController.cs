@@ -1,8 +1,9 @@
 ﻿
 using System.Diagnostics;
 
-namespace RowiTechTask.Controllers
+namespace RowiTechTask.Areas.User.Controllers
 {
+    [Area("User")]
     public class HomeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -19,7 +20,6 @@ namespace RowiTechTask.Controllers
         {
             var taskList = _unitOfWork.Task.GetAll("PayType,State,Tags");
             return View(taskList);
-
         }
 
         public IActionResult Privacy()

@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RowiTechTask.Models.ViewModels;
+using RowiTechTask.Utility;
+using System.Data;
 
-namespace RowiTechTask.Controllers
+namespace RowiTechTask.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
     public class TaskController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

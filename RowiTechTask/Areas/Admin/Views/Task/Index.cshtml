@@ -38,7 +38,7 @@
             {
                 <div class="payment">@string.Concat(@task.Amount, " ₽")</div>
             }
-            <p class="long-description">@TextFormation.TextToFormat(@task.LongDescription)</p>
+            <p class="long-description">@Html.Raw(@TextFormation.TextToFormat(@task.LongDescription))</p>
         <div class="tags">
                 @foreach (var tag in task.Tags)
                 {

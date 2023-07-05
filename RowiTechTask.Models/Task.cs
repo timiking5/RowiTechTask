@@ -30,15 +30,6 @@ namespace RowiTechTask.Models
         public int StateId { get; set; }
         [ForeignKey("StateId"), ValidateNever]
         public State State { get; set; }
-        /// <summary>
-        /// Task has a single user working on it
-        /// But User has multiple tasks he can work on
-        /// </summary>
-        [ValidateNever]
-        public int? UserId { get; set; }
-        [ForeignKey("UserId")]
-        [ValidateNever]
-        public User User { get; set; }
         [ValidateNever]
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }

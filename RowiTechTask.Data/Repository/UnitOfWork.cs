@@ -11,7 +11,7 @@
         public ITagRepository Tag { get; private set; }
         public IPayTypeRepository PayType { get; private set; }
         public IStateRepository State { get; private set; }
-        private ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
