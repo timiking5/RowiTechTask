@@ -1,5 +1,7 @@
-﻿
+﻿using Microsoft.AspNetCore.Identity;
+using RowiTechTask.Models.ViewModels;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace RowiTechTask.Areas.User.Controllers
 {
@@ -7,13 +9,14 @@ namespace RowiTechTask.Areas.User.Controllers
     public class HomeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<HomeController> _logger;
 
-
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -26,7 +29,43 @@ namespace RowiTechTask.Areas.User.Controllers
         {
             return View();
         }
-
+        public IActionResult Details(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+            var task = _unitOfWork.Task.Get(x => x.Id == id, "PayType,State,Tags");
+            var solutions = _unitOfWork.Solution.GetAll("User").Where(x => x.TaskId == id).ToList();
+            var userSolution = _unitOfWork.Solution.Get(x => x.TaskId == id && x.UserId == userId);
+            return View(new DetailsViewModel
+            {
+                Solutions = solutions,
+                Task = task,
+                UserSolution = userSolution == null ? new() : userSolution
+            });
+        }
+        [HttpPost]
+        public IActionResult Details(DetailsViewModel vm)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+            var user = _unitOfWork.User.Get(x => x.Id == userId);
+            vm.UserSolution.CreatedDate = DateTime.Now;
+            vm.UserSolution.User = user;
+            vm.UserSolution.UserId = userId;
+            vm.UserSolution.TaskId = vm.Task.Id;
+            if (ModelState.IsValid)
+            {
+                var userSolution = _unitOfWork.Solution.Get(x => x.TaskId == vm.Task.Id && x.UserId == userId);
+                if (userSolution == null)
+                {
+                    _unitOfWork.Solution.Create(vm.UserSolution);
+                }
+                else
+                {
+                    _unitOfWork.Solution.Update(vm.UserSolution);
+                }
+                // return View(vm);
+            }
+            return Details(vm.Task.Id);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -11,5 +11,9 @@
             }
             return text[0..133] + "...";
         }
+        public static string SolutionHeader(string firstName, string lastName)
+        {
+            return firstName + " " + lastName + "'s";
+        }
     }
 }

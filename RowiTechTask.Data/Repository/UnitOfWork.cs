@@ -11,6 +11,7 @@
         public ITagRepository Tag { get; private set; }
         public IPayTypeRepository PayType { get; private set; }
         public IStateRepository State { get; private set; }
+        public ISolutionRepository Solution { get; private set; }
         private readonly ApplicationDbContext _dbContext;
 
         public UnitOfWork(ApplicationDbContext dbContext)
@@ -22,6 +23,7 @@
             Tag = new TagRepository(_dbContext);
             PayType = new PayTypeRepository(_dbContext);
             State = new StateRepository(_dbContext);
+            Solution = new SolutionRepository(_dbContext);
         }
 
         public void Save()

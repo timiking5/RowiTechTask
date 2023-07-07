@@ -14,6 +14,7 @@ namespace RowiTechTask.Data.Repository.IRepository
         ITagRepository Tag { get; }
         IPayTypeRepository PayType { get; }
         IStateRepository State { get; }
+        ISolutionRepository Solution { get; }
         void Save();
     }
 }

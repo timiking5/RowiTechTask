@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RowiTechTask.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class addTablesWithSomeKeysAndSeed : Migration
+    public partial class FixIt : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,9 @@ namespace RowiTechTask.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -66,16 +69,16 @@ namespace RowiTechTask.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "Remarks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.PrimaryKey("PK_Remarks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +92,19 @@ namespace RowiTechTask.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_States", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TagName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,28 +214,6 @@ namespace RowiTechTask.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EmailAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tasks",
                 columns: table => new
                 {
@@ -230,10 +224,8 @@ namespace RowiTechTask.Data.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     PayTypeId = table.Column<int>(type: "int", nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    StateId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,29 +242,55 @@ namespace RowiTechTask.Data.Migrations
                         principalTable: "States",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Solutions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TaskId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Solutions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tasks_Users_UserId",
+                        name: "FK_Solutions_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Solutions_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Remarks",
+                name: "TagTask",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TaskId = table.Column<int>(type: "int", nullable: false)
+                    TagsId = table.Column<int>(type: "int", nullable: false),
+                    TasksId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Remarks", x => x.Id);
+                    table.PrimaryKey("PK_TagTask", x => new { x.TagsId, x.TasksId });
                     table.ForeignKey(
-                        name: "FK_Remarks_Tasks_TaskId",
-                        column: x => x.TaskId,
+                        name: "FK_TagTask_Tags_TagsId",
+                        column: x => x.TagsId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TagTask_Tasks_TasksId",
+                        column: x => x.TasksId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -288,15 +306,6 @@ namespace RowiTechTask.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "RoleName" },
-                values: new object[,]
-                {
-                    { 1, "User" },
-                    { 2, "Admin" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "States",
                 columns: new[] { "Id", "StateName" },
                 values: new object[,]
@@ -308,6 +317,26 @@ namespace RowiTechTask.Data.Migrations
                     { 5, "Needs Rework" },
                     { 6, "Failed" },
                     { 7, "Expired" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tags",
+                columns: new[] { "Id", "TagName" },
+                values: new object[,]
+                {
+                    { 1, "C#" },
+                    { 2, "Web" },
+                    { 3, "JavaScript" },
+                    { 4, "Asp.NET" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "Id", "Amount", "CreatedDate", "ExpirationDate", "LongDescription", "PayTypeId", "ShortDescription", "StateId" },
+                values: new object[,]
+                {
+                    { 1, 2000m, new DateTime(2023, 7, 7, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6082), new DateTime(2023, 7, 21, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6083), "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them. This counts as your summer internship, pay some attention to it", 1, "Marketplace with tasks", 1 },
+                    { 2, 5000m, new DateTime(2023, 7, 6, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6088), new DateTime(2023, 7, 20, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6089), "My room is a mess! I need somebody to clean it up, because i wont handle it myself... You will get paid tho. If only i knew how to handle all of that dirty stuff", 2, "I need you to clean my room", 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -350,9 +379,19 @@ namespace RowiTechTask.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Remarks_TaskId",
-                table: "Remarks",
+                name: "IX_Solutions_TaskId",
+                table: "Solutions",
                 column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solutions_UserId",
+                table: "Solutions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TagTask_TasksId",
+                table: "TagTask",
+                column: "TasksId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_PayTypeId",
@@ -363,16 +402,6 @@ namespace RowiTechTask.Data.Migrations
                 name: "IX_Tasks_StateId",
                 table: "Tasks",
                 column: "StateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_UserId",
-                table: "Tasks",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
-                table: "Users",
-                column: "RoleId");
         }
 
         /// <inheritdoc />
@@ -397,10 +426,19 @@ namespace RowiTechTask.Data.Migrations
                 name: "Remarks");
 
             migrationBuilder.DropTable(
+                name: "Solutions");
+
+            migrationBuilder.DropTable(
+                name: "TagTask");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
@@ -410,12 +448,6 @@ namespace RowiTechTask.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "States");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
         }
     }
 }

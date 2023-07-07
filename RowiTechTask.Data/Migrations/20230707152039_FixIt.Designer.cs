@@ -12,8 +12,8 @@ using RowiTechTask.Data.DataAccess;
 namespace RowiTechTask.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230629122307_addTablesWithSomeKeysAndSeed")]
-    partial class addTablesWithSomeKeysAndSeed
+    [Migration("20230707152039_FixIt")]
+    partial class FixIt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,10 @@ namespace RowiTechTask.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +144,10 @@ namespace RowiTechTask.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -265,17 +273,12 @@ namespace RowiTechTask.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
 
                     b.ToTable("Remarks");
                 });
 
-            modelBuilder.Entity("RowiTechTask.Models.Role", b =>
+            modelBuilder.Entity("RowiTechTask.Models.Solution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -283,26 +286,27 @@ namespace RowiTechTask.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.HasIndex("TaskId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            RoleName = "User"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            RoleName = "Admin"
-                        });
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Solutions");
                 });
 
             modelBuilder.Entity("RowiTechTask.Models.State", b =>
@@ -360,6 +364,46 @@ namespace RowiTechTask.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("RowiTechTask.Models.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("TagName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TagName = "C#"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            TagName = "Web"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            TagName = "JavaScript"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            TagName = "Asp.NET"
+                        });
+                });
+
             modelBuilder.Entity("RowiTechTask.Models.Task", b =>
                 {
                     b.Property<int>("Id")
@@ -373,9 +417,6 @@ namespace RowiTechTask.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
@@ -395,32 +436,57 @@ namespace RowiTechTask.Data.Migrations
                     b.Property<int>("StateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PayTypeId");
 
                     b.HasIndex("StateId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Tasks");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 2000m,
+                            CreatedDate = new DateTime(2023, 7, 7, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6082),
+                            ExpirationDate = new DateTime(2023, 7, 21, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6083),
+                            LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them. This counts as your summer internship, pay some attention to it",
+                            PayTypeId = 1,
+                            ShortDescription = "Marketplace with tasks",
+                            StateId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 5000m,
+                            CreatedDate = new DateTime(2023, 7, 6, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6088),
+                            ExpirationDate = new DateTime(2023, 7, 20, 18, 20, 39, 402, DateTimeKind.Local).AddTicks(6089),
+                            LongDescription = "My room is a mess! I need somebody to clean it up, because i wont handle it myself... You will get paid tho. If only i knew how to handle all of that dirty stuff",
+                            PayTypeId = 2,
+                            ShortDescription = "I need you to clean my room",
+                            StateId = 2
+                        });
                 });
 
-            modelBuilder.Entity("RowiTechTask.Models.User", b =>
+            modelBuilder.Entity("TagTask", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("TagsId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("TasksId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.HasKey("TagsId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("TagTask");
+                });
+
+            modelBuilder.Entity("RowiTechTask.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -432,14 +498,7 @@ namespace RowiTechTask.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Users");
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -493,7 +552,7 @@ namespace RowiTechTask.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RowiTechTask.Models.Remark", b =>
+            modelBuilder.Entity("RowiTechTask.Models.Solution", b =>
                 {
                     b.HasOne("RowiTechTask.Models.Task", "Task")
                         .WithMany()
@@ -501,7 +560,15 @@ namespace RowiTechTask.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RowiTechTask.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Task");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RowiTechTask.Models.Task", b =>
@@ -518,33 +585,24 @@ namespace RowiTechTask.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RowiTechTask.Models.User", "User")
-                        .WithMany("Tasks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("PayType");
 
                     b.Navigation("State");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RowiTechTask.Models.User", b =>
+            modelBuilder.Entity("TagTask", b =>
                 {
-                    b.HasOne("RowiTechTask.Models.Role", "Role")
+                    b.HasOne("RowiTechTask.Models.Tag", null)
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("RowiTechTask.Models.User", b =>
-                {
-                    b.Navigation("Tasks");
+                    b.HasOne("RowiTechTask.Models.Task", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

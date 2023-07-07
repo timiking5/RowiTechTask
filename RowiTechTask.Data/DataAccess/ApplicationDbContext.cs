@@ -16,6 +16,7 @@ namespace RowiTechTask.Data.DataAccess
         public DbSet<PayType> PayTypes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -51,7 +52,8 @@ namespace RowiTechTask.Data.DataAccess
                     CreatedDate = DateTime.Now,
                     Amount = 2000,
                     ExpirationDate = DateTime.Now + TimeSpan.FromDays(14),
-                    LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them",
+                    LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks " +
+                    "and get rewarded for them. This counts as your summer internship, pay some attention to it",
                     ShortDescription = "Marketplace with tasks",
                     PayTypeId = 1,
                     StateId = 1
@@ -62,13 +64,13 @@ namespace RowiTechTask.Data.DataAccess
                     CreatedDate = DateTime.Now - TimeSpan.FromDays(1),
                     Amount = 5000,
                     ExpirationDate = DateTime.Now + TimeSpan.FromDays(13),
-                    LongDescription = "My room is a mess! I need somebody to clean it up, because i won't handle it myself... You will get paid tho",
+                    LongDescription = "My room is a mess! I need somebody to clean it up, because i wont handle it myself... You will " +
+                    "get paid tho. If only i knew how to handle all of that dirty stuff",
                     ShortDescription = "I need you to clean my room",
                     PayTypeId = 2,
                     StateId = 2
                 }
                 );
-            
         }
     }
 }

@@ -12,8 +12,8 @@ using RowiTechTask.Data.DataAccess;
 namespace RowiTechTask.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230705123140_addIdentity")]
-    partial class addIdentity
+    [Migration("20230707153246_allowNullable")]
+    partial class allowNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,10 @@ namespace RowiTechTask.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +144,10 @@ namespace RowiTechTask.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -170,12 +178,10 @@ namespace RowiTechTask.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -212,12 +218,10 @@ namespace RowiTechTask.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -269,14 +273,45 @@ namespace RowiTechTask.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Remarks");
+                });
+
+            modelBuilder.Entity("RowiTechTask.Models.Solution", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("RemarkId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RemarkId");
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Remarks");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Solutions");
                 });
 
             modelBuilder.Entity("RowiTechTask.Models.State", b =>
@@ -419,9 +454,9 @@ namespace RowiTechTask.Data.Migrations
                         {
                             Id = 1,
                             Amount = 2000m,
-                            CreatedDate = new DateTime(2023, 7, 5, 15, 31, 40, 218, DateTimeKind.Local).AddTicks(5885),
-                            ExpirationDate = new DateTime(2023, 7, 19, 15, 31, 40, 218, DateTimeKind.Local).AddTicks(5887),
-                            LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them",
+                            CreatedDate = new DateTime(2023, 7, 7, 18, 32, 46, 678, DateTimeKind.Local).AddTicks(5221),
+                            ExpirationDate = new DateTime(2023, 7, 21, 18, 32, 46, 678, DateTimeKind.Local).AddTicks(5222),
+                            LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them. This counts as your summer internship, pay some attention to it",
                             PayTypeId = 1,
                             ShortDescription = "Marketplace with tasks",
                             StateId = 1
@@ -430,43 +465,12 @@ namespace RowiTechTask.Data.Migrations
                         {
                             Id = 2,
                             Amount = 5000m,
-                            CreatedDate = new DateTime(2023, 7, 4, 15, 31, 40, 218, DateTimeKind.Local).AddTicks(5894),
-                            ExpirationDate = new DateTime(2023, 7, 18, 15, 31, 40, 218, DateTimeKind.Local).AddTicks(5895),
-                            LongDescription = "My room is a mess! I need somebody to clean it up, because i won't handle it myself... You will get paid tho",
+                            CreatedDate = new DateTime(2023, 7, 6, 18, 32, 46, 678, DateTimeKind.Local).AddTicks(5227),
+                            ExpirationDate = new DateTime(2023, 7, 20, 18, 32, 46, 678, DateTimeKind.Local).AddTicks(5228),
+                            LongDescription = "My room is a mess! I need somebody to clean it up, because i wont handle it myself... You will get paid tho. If only i knew how to handle all of that dirty stuff",
                             PayTypeId = 2,
                             ShortDescription = "I need you to clean my room",
                             StateId = 2
-                        });
-                });
-
-            modelBuilder.Entity("RowiTechTask.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FirstName = "Timofey",
-                            LastName = "Purits"
                         });
                 });
 
@@ -483,6 +487,23 @@ namespace RowiTechTask.Data.Migrations
                     b.HasIndex("TasksId");
 
                     b.ToTable("TagTask");
+                });
+
+            modelBuilder.Entity("RowiTechTask.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -536,15 +557,29 @@ namespace RowiTechTask.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RowiTechTask.Models.Remark", b =>
+            modelBuilder.Entity("RowiTechTask.Models.Solution", b =>
                 {
+                    b.HasOne("RowiTechTask.Models.Remark", "Remark")
+                        .WithMany()
+                        .HasForeignKey("RemarkId");
+
                     b.HasOne("RowiTechTask.Models.Task", "Task")
                         .WithMany()
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RowiTechTask.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Remark");
+
                     b.Navigation("Task");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RowiTechTask.Models.Task", b =>
