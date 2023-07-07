@@ -30,6 +30,7 @@ namespace RowiTechTask.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                TempData["success"] = "Tag successfully created";
                 _unitOfWork.Tag.Create(model);
                 TempData["success"] = "Category created successfully!";
                 return RedirectToAction("Index");
@@ -55,7 +56,7 @@ namespace RowiTechTask.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 _unitOfWork.Tag.Update(model);
-                TempData["success"] = "Category updated successfully!";
+                TempData["success"] = "Tag updated successfully!";
                 return RedirectToAction("Index");
             }
             return View();
@@ -82,7 +83,7 @@ namespace RowiTechTask.Areas.Admin.Controllers
                 return NotFound();
             }
             _unitOfWork.Tag.Delete(categoryFromDb);
-            TempData["success"] = "Category deleted successfully!";
+            TempData["success"] = "Tag deleted successfully!";
             return RedirectToAction("Index");
         }
     }

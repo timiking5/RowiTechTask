@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using RowiTechTask.Models;
 using RowiTechTask.Models.ViewModels;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -33,7 +34,7 @@ namespace RowiTechTask.Areas.User.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             var task = _unitOfWork.Task.Get(x => x.Id == id, "PayType,State,Tags");
-            var solutions = _unitOfWork.Solution.GetAll("User").Where(x => x.TaskId == id).ToList();
+            var solutions = _unitOfWork.Solution.GetAll("User,Remark").Where(x => x.TaskId == id).ToList();
             var userSolution = _unitOfWork.Solution.Get(x => x.TaskId == id && x.UserId == userId);
             return View(new DetailsViewModel
             {
@@ -56,11 +57,14 @@ namespace RowiTechTask.Areas.User.Controllers
                 var userSolution = _unitOfWork.Solution.Get(x => x.TaskId == vm.Task.Id && x.UserId == userId);
                 if (userSolution == null)
                 {
+                    TempData["success"] = "Solution successfully added";
                     _unitOfWork.Solution.Create(vm.UserSolution);
                 }
                 else
                 {
-                    _unitOfWork.Solution.Update(vm.UserSolution);
+                    TempData["success"] = "Solution successfully edited";
+                    userSolution.Content = vm.UserSolution.Content;
+                    _unitOfWork.Solution.Update(userSolution);
                 }
                 // return View(vm);
             }
@@ -71,5 +75,35 @@ namespace RowiTechTask.Areas.User.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult PostRemark(int solutionId, string remarkText)
+        {
+            var solution = _unitOfWork.Solution.Get(x => x.Id == solutionId, "Remark");
+            if (solution == null)
+            {
+                return NotFound();
+            }
+            if (solution.Remark is null)
+            {
+                Remark remark = new()
+                {
+                    Description = remarkText
+                };
+                _unitOfWork.Remark.Create(remark);
+                solution.Remark = remark;
+                solution.RemarkId = remark.Id;
+            }
+            else
+            {
+                solution.Remark.Description = remarkText;
+                _unitOfWork.Remark.Update(solution.Remark);
+            }
+            _unitOfWork.Solution.Update(solution);
+            return Json(new { success = true, message = "Remark added successfully" });
+        }
+        #endregion
     }
 }

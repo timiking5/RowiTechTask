@@ -68,10 +68,12 @@ namespace RowiTechTask.Areas.Admin.Controllers
             {
                 if (model.Task.Id == 0)
                 {
+                    TempData["success"] = "Task successfully created";
                     _unitOfWork.Task.Create(model.Task);
                 }
                 else
                 {
+                    TempData["success"] = "Task successfully edited";
                     _unitOfWork.Task.Update(model.Task);
                 }
                 return RedirectToAction("Index");
@@ -111,7 +113,7 @@ namespace RowiTechTask.Areas.Admin.Controllers
                 return NotFound();
             }
             _unitOfWork.Task.Delete(categoryFromDb);
-            TempData["success"] = "Category deleted successfully!";
+            TempData["success"] = "Task deleted successfully!";
             return RedirectToAction("Index");
         }
     }

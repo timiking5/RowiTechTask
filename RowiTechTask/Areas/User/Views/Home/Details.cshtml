@@ -101,20 +101,24 @@
                         Post Date: @solution.CreatedDate
                     </h6>
                 </div>
-                @if (!string.IsNullOrEmpty(solution.Remark.Description))
+                @if (solution.Remark is not null)
                 {
                     <div class="row ps-2">
                         <h6 class="text-dark text-opacity-50  pb-2">
-                            Remark: @solution.Remark
+                            Remark: @solution.Remark.Description
                         </h6>
+                    </div>
+                }
+                @if (User.IsInRole(SD.AdminRole))
+                {
+                    <div>
+                        <input hidden value="@solution.Id"/>
+                        <input type="text" />
+                        <button class="main-button" onclick=postRemark>remark</button>
                     </div>
                 }
             </div>
         </div>
-        @if (User.IsInRole(SD.AdminRole))
-        {
-            
-        }
     }
 </div>
 
@@ -141,4 +145,5 @@
     @{
         <partial name="_ValidationScriptsPartial" />
     }
+    <script src="~/js/addRemark.js"></script>
 }
