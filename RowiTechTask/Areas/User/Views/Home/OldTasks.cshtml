@@ -43,35 +43,11 @@
                         <div class="row ps-2">
                             <h6 class="text-dark text-opacity-50 ">Amount : @string.Concat(@Model.Task.Amount, " ₽")</h6>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
-            <div class="py-2 col-12">
-                <label asp-for="@Model.UserSolution.Content" class="ms-2 text-muted"></label>
-                    <textarea asp-for="@Model.UserSolution.Content" class="form-control border-0 shadow">@Model.UserSolution.Content</textarea>
-                <span asp-validation-for="@Model.UserSolution.Content" class="text-danger"></span>
-            </div>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="row">
-                    <div class="col-12 col-md-6 pb-1">
-                        <button type="submit" class="btn btn-primary bg-gradient  w-50 py-2 text-uppercase fw-semibold">
-                            @(Model.UserSolution.Id != 0 ? "Edit" : "Post") Solution
-                        </button>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="row">
-                    <div class="col-12 col-md-6 pb-1" >
-                        <button type="submit" disabled class="btn btn-primary bg-gradient  w-50 py-2 text-uppercase fw-semibold">
-                            You need to log in first
-                        </button>
-                    </div>
-                </div>
-            }
+            
         </div>
     </div>
 </form>
@@ -106,7 +82,7 @@
                 @if (User.IsInRole(SD.AdminRole))
                 {
                     <div>
-                        <input hidden value="@solution.Id"/>
+                        <input hidden value="@solution.Id" />
                         <input type="text" />
                         <button class="main-button" onclick=postRemark>remark</button>
                     </div>
@@ -118,24 +94,6 @@
 
 
 @section Scripts{
-    <script>
-        $(function () {
-            $("#tagsDropdown").chosen();
-        });
-        tinymce.init({
-            selector: 'textarea',
-            plugins: 'anchor autolink charmap codesample emoticons lists table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
-            mergetags_list: [
-                { value: 'First.Name', title: 'First Name' },
-                { value: 'Email', title: 'Email' },
-            ]
-        });
-
-
-    </script>
     @{
         <partial name="_ValidationScriptsPartial" />
     }

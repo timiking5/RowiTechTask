@@ -23,7 +23,29 @@ namespace RowiTechTask.Areas.User.Controllers
         public IActionResult Index()
         {
             var taskList = _unitOfWork.Task.GetAll("PayType,State,Tags");
-            return View(taskList);
+            foreach (var task in taskList)
+            {
+                bool fl = false;
+                if (task.State.StateName == "Expired" || task.State.StateName == "Failed")
+                {
+                    continue;
+                }
+                if (task.ExpirationDate >= DateTime.Now)
+                {
+                    task.State = _unitOfWork.State.Get(x => x.StateName == "Expired");
+                    fl = true;
+                }
+                else if (task.CreatedDate >= DateTime.Now + TimeSpan.FromDays(1))
+                {
+                    task.State = _unitOfWork.State.Get(x => x.StateName == "In Process");
+                    fl = true;
+                }
+                if (fl)
+                {
+                    _unitOfWork.Task.Update(task);
+                }
+            }
+            return View(taskList.Where(x => x.State.StateName != "Expired" && x.State.StateName != "Failed"));
         }
 
         public IActionResult Privacy()
@@ -36,12 +58,18 @@ namespace RowiTechTask.Areas.User.Controllers
             var task = _unitOfWork.Task.Get(x => x.Id == id, "PayType,State,Tags");
             var solutions = _unitOfWork.Solution.GetAll("User,Remark").Where(x => x.TaskId == id).ToList();
             var userSolution = _unitOfWork.Solution.Get(x => x.TaskId == id && x.UserId == userId);
-            return View(new DetailsViewModel
+            var vm = new DetailsViewModel
             {
                 Solutions = solutions,
                 Task = task,
                 UserSolution = userSolution == null ? new() : userSolution
-            });
+            };
+
+            if (task.State.StateName != "Expired" && task.State.StateName != "Failed")
+            {
+                return View(vm);
+            }
+            return RedirectToAction("OldTasks", new { vm });
         }
         [HttpPost]
         public IActionResult Details(DetailsViewModel vm)
@@ -74,6 +102,11 @@ namespace RowiTechTask.Areas.User.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult OldTasks(DetailsViewModel vm)
+        {
+            return View(vm);
         }
 
         #region API CALLS

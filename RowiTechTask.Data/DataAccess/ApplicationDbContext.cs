@@ -33,9 +33,7 @@ namespace RowiTechTask.Data.DataAccess
             modelBuilder.Entity<State>().HasData(
                 new State { Id = 1, StateName = "New" },  // awaiting for an executor
                 new State { Id = 2, StateName = "In Process" },
-                new State { Id = 3, StateName = "On Review" },
                 new State { Id = 4, StateName = "Finished" },
-                new State { Id = 5, StateName = "Needs Rework" },
                 new State { Id = 6, StateName = "Failed" },
                 new State { Id = 7, StateName = "Expired" }
                 );
