@@ -8,6 +8,8 @@ namespace RowiTechTask.Models.ViewModels
         public Task Task { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> PayTypes { get; set; }
+        [ValidateNever, DisplayName("Choose state")]
+        public IEnumerable<SelectListItem> States { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> Tags { get; set; }
         [DisplayName("Tags")]

@@ -15,16 +15,18 @@ namespace RowiTechTask.Data.DataAccess
         public DbSet<State> States { get; set; }
         public DbSet<PayType> PayTypes { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<TagTask> TagTask { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Solution> Solutions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<TagTask>().HasKey(u => new { u.TaskId, u.TagId});
 
-            
             modelBuilder.Entity<Models.Task>()
                 .HasMany(e => e.Tags)
-                .WithMany(e => e.Tasks);
+                .WithMany(e => e.Tasks)
+                .UsingEntity<TagTask>();
 
             modelBuilder.Entity<PayType>().HasData(
                 new PayType { Id = 1, PayTypeName = "Hourly" },
@@ -37,11 +39,13 @@ namespace RowiTechTask.Data.DataAccess
                 new State { Id = 6, StateName = "Failed" },
                 new State { Id = 7, StateName = "Expired" }
                 );
+            
             modelBuilder.Entity<Tag>().HasData(
                 new Tag { Id = 1, TagName = "C#" },
                 new Tag { Id = 2, TagName = "Web" },
                 new Tag { Id = 3, TagName = "JavaScript" },
-                new Tag { Id = 4, TagName = "Asp.NET" }
+                new Tag { Id = 4, TagName = "Asp.NET" },
+                new Tag { Id = 5, TagName = "Real Job"}
                 );
             modelBuilder.Entity<Models.Task>().HasData(
                 new Models.Task
@@ -68,6 +72,12 @@ namespace RowiTechTask.Data.DataAccess
                     PayTypeId = 2,
                     StateId = 2
                 }
+                );
+            modelBuilder.Entity<TagTask>().HasData(
+                new TagTask { TaskId = 1, TagId = 1},
+                new TagTask { TaskId = 1, TagId = 2},
+                new TagTask { TaskId = 1, TagId = 4},
+                new TagTask { TaskId = 2, TagId = 5}
                 );
         }
     }

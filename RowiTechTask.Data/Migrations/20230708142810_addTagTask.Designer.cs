@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RowiTechTask.Data.DataAccess;
 
@@ -11,9 +12,11 @@ using RowiTechTask.Data.DataAccess;
 namespace RowiTechTask.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230708142810_addTagTask")]
+    partial class addTagTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -393,11 +396,6 @@ namespace RowiTechTask.Data.Migrations
                         {
                             Id = 4,
                             TagName = "Asp.NET"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            TagName = "Real Job"
                         });
                 });
 
@@ -414,28 +412,6 @@ namespace RowiTechTask.Data.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("TagTask");
-
-                    b.HasData(
-                        new
-                        {
-                            TaskId = 1,
-                            TagId = 1
-                        },
-                        new
-                        {
-                            TaskId = 1,
-                            TagId = 2
-                        },
-                        new
-                        {
-                            TaskId = 1,
-                            TagId = 4
-                        },
-                        new
-                        {
-                            TaskId = 2,
-                            TagId = 5
-                        });
                 });
 
             modelBuilder.Entity("RowiTechTask.Models.Task", b =>
@@ -483,8 +459,8 @@ namespace RowiTechTask.Data.Migrations
                         {
                             Id = 1,
                             Amount = 2000m,
-                            CreatedDate = new DateTime(2023, 7, 8, 17, 31, 1, 131, DateTimeKind.Local).AddTicks(8075),
-                            ExpirationDate = new DateTime(2023, 7, 22, 17, 31, 1, 131, DateTimeKind.Local).AddTicks(8076),
+                            CreatedDate = new DateTime(2023, 7, 8, 17, 28, 10, 727, DateTimeKind.Local).AddTicks(679),
+                            ExpirationDate = new DateTime(2023, 7, 22, 17, 28, 10, 727, DateTimeKind.Local).AddTicks(680),
                             LongDescription = "We need to build a marketplace with admins, users, logging. Users must be able to complete tasks and get rewarded for them. This counts as your summer internship, pay some attention to it",
                             PayTypeId = 1,
                             ShortDescription = "Marketplace with tasks",
@@ -494,8 +470,8 @@ namespace RowiTechTask.Data.Migrations
                         {
                             Id = 2,
                             Amount = 5000m,
-                            CreatedDate = new DateTime(2023, 7, 7, 17, 31, 1, 131, DateTimeKind.Local).AddTicks(8082),
-                            ExpirationDate = new DateTime(2023, 7, 21, 17, 31, 1, 131, DateTimeKind.Local).AddTicks(8083),
+                            CreatedDate = new DateTime(2023, 7, 7, 17, 28, 10, 727, DateTimeKind.Local).AddTicks(687),
+                            ExpirationDate = new DateTime(2023, 7, 21, 17, 28, 10, 727, DateTimeKind.Local).AddTicks(688),
                             LongDescription = "My room is a mess! I need somebody to clean it up, because i wont handle it myself... You will get paid tho. If only i knew how to handle all of that dirty stuff",
                             PayTypeId = 2,
                             ShortDescription = "I need you to clean my room",

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using RowiTechTask.Models;
 using RowiTechTask.Models.ViewModels;
+using RowiTechTask.Utility;
+using System.Data;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -30,22 +33,19 @@ namespace RowiTechTask.Areas.User.Controllers
                 {
                     continue;
                 }
-                if (task.ExpirationDate >= DateTime.Now)
+                if (task.ExpirationDate <= DateTime.Now)
                 {
                     task.State = _unitOfWork.State.Get(x => x.StateName == "Expired");
                     fl = true;
                 }
-                else if (task.CreatedDate >= DateTime.Now + TimeSpan.FromDays(1))
-                {
-                    task.State = _unitOfWork.State.Get(x => x.StateName == "In Process");
-                    fl = true;
-                }
+                
                 if (fl)
                 {
                     _unitOfWork.Task.Update(task);
                 }
             }
-            return View(taskList.Where(x => x.State.StateName != "Expired" && x.State.StateName != "Failed"));
+            var temp = taskList.Where(x => x.State.StateName != "Expired" && x.State.StateName != "Failed");
+            return View(temp);
         }
 
         public IActionResult Privacy()
@@ -65,13 +65,13 @@ namespace RowiTechTask.Areas.User.Controllers
                 UserSolution = userSolution == null ? new() : userSolution
             };
 
-            if (task.State.StateName != "Expired" && task.State.StateName != "Failed")
+            if (task.State.StateName != "Expired" && task.State.StateName != "Failed" && task.State.StateName != "Finished")
             {
                 return View(vm);
             }
-            return RedirectToAction("OldTasks", new { vm });
+            return View("OldTasks", vm);
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,Admin")]
         public IActionResult Details(DetailsViewModel vm)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId

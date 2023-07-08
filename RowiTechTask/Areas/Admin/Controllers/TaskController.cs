@@ -91,30 +91,59 @@ namespace RowiTechTask.Areas.Admin.Controllers
             TaskViewModel vm = new() { PayTypes = payTypeList, Tags = tagList, Task = model.Task, tagIds = model.tagIds };
             return View(vm);
         }
-        public IActionResult Delete(int? id)
+        public IActionResult Finish(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var categoryFromDb = _unitOfWork.Task.Get(x => x.Id == id, "Tag,PayType,State");
-            if (categoryFromDb == null)
+            var taskFromDb = _unitOfWork.Task.Get(x => x.Id == id, "Tags,PayType,State");
+            if (taskFromDb == null)
             {
                 return NotFound();
             }
-            return View(categoryFromDb);
+
+            var vm = ReturnVM();
+            vm.Task = taskFromDb;
+            vm.tagIds = taskFromDb.Tags.Select(x => x.Id).ToArray();
+            
+            return View(vm);
         }
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
+        [HttpPost]
+        public IActionResult Finish(TaskViewModel vm)
         {
-            var categoryFromDb = _unitOfWork.Task.Get(x => x.Id == id);
-            if (categoryFromDb == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                _unitOfWork.Task.Update(vm.Task);
+                TempData["success"] = "Task finished successfully!";
+                return RedirectToAction("Index");
             }
-            _unitOfWork.Task.Delete(categoryFromDb);
-            TempData["success"] = "Task deleted successfully!";
-            return RedirectToAction("Index");
+            return RedirectToAction("Finish", new { id = vm.Task.Id });
+        }
+        public TaskViewModel ReturnVM()
+        {
+            IEnumerable<SelectListItem> tagList = _unitOfWork.Tag.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.TagName,
+                Value = u.Id.ToString()
+            });
+            IEnumerable<SelectListItem> payTypeList = _unitOfWork.PayType.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.PayTypeName,
+                Value = u.Id.ToString()
+            });
+            IEnumerable<SelectListItem> stateList = _unitOfWork.State.GetAll().
+                Where(x => x.StateName == "Failed" || x.StateName == "Finished").Select(u => new SelectListItem
+            {
+                Text = u.StateName,
+                Value = u.Id.ToString()
+            });
+            return new TaskViewModel
+            {
+                PayTypes = payTypeList,
+                Tags = tagList,
+                States = stateList
+            };
         }
     }
 }

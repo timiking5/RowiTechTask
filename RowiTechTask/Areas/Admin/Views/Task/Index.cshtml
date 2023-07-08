@@ -20,9 +20,13 @@
                 {
                     <span class="status new">@task.State.StateName</span>
                 }
-                else if (@task.State.StateName == "In Process" || @task.State.StateName == "On Review" || task.State.StateName == "Needs Rework")
+                else if (@task.State.StateName == "In Process")
                 {
                     <span class="status in-work">@task.State.StateName</span>
+                }
+                else if (task.State.StateName == "Finished")
+                {
+                    <span class="status finished">@task.State.StateName</span>
                 }
                 else
                 {
@@ -48,12 +52,12 @@
             @if (task.State.StateName == "New")
             {
                 <a asp-controller="Task" asp-action="Upsert" asp-route-id="@task.Id" class="btn btn-primary mx-3"><i class="bi bi-pencil-square"></i> Edit</a>
-                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-danger mx-3"><i class="bi bi-trash3"></i> Delete</a>
+                <a asp-controller="Task" asp-action="Finish" asp-route-id="@task.Id" class="btn btn-danger mx-3"><i class="bi bi-trash3"></i> Finish</a>
             }
             else
             {
                 <a asp-controller="Task" asp-action="Upsert" asp-route-id="@task.Id" class="btn btn-primary mx-3 disabled"><i class="bi bi-pencil-square"></i> Edit</a>
-                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-danger mx-3 disabled"><i class="bi bi-trash3"></i> Delete</a>
+                <a asp-controller="Task" asp-action="Finish" asp-route-id="@task.Id" class="btn btn-danger mx-3 disabled"><i class="bi bi-trash3"></i> Finish</a>
             }
             <div class="extra-div"></div>
     </div>

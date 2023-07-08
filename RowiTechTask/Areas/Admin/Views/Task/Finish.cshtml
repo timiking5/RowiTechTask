@@ -14,6 +14,12 @@
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data">
             <input asp-for="@Model.Task.Id" hidden />
+            <input asp-for="@Model.Task.ShortDescription" hidden />
+            <input asp-for="@Model.Task.PayTypeId" hidden />
+            <input asp-for="@Model.Task.Amount" hidden />
+            <input asp-for="@Model.Task.ExpirationDate" hidden />
+
+            <textarea hidden asp-for="@Model.Task.LongDescription" class="form-control border-0 shadow"></textarea>
             <div class="row">
                 <div class="col-12">
                     <div class="border p-3">
@@ -22,12 +28,6 @@
                             <label asp-for="@Model.Task.ShortDescription" class="ms-2"></label>
                             <span asp-validation-for="@Model.Task.ShortDescription" class="text-danger"></span>
                         </div>
-                        <div class="py-2 col-12">
-                            <label asp-for="@Model.Task.LongDescription" class="ms-2 text-muted"></label>
-                            <textarea disabled asp-for="@Model.Task.LongDescription" class="form-control border-0 shadow"></textarea>
-                            <span asp-validation-for="@Model.Task.LongDescription" class="text-danger"></span>
-                        </div>
-
                         <div class="form-floating py-2 col-12">
                             <input disabled asp-for="@Model.Task.Amount" class="form-control border-0 shadow" />
                             <label asp-for="@Model.Task.Amount" class="ms-2"></label>
@@ -51,6 +51,13 @@
                             <label asp-for="@Model.Task.PayTypeId" class="ms-2"></label>
                             <span asp-validation-for="@Model.Task.PayTypeId" class="text-danger"></span>
                         </div>
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="@Model.Task.StateId" asp-items="@(Model.States)" class="form-select border-0 shadow">
+                                <option disabled selected>--Select Finished State--</option>
+                            </select>
+                            <label asp-for="@Model.Task.PayTypeId" class="ms-2"></label>
+                            <span asp-validation-for="@Model.Task.PayTypeId" class="text-danger"></span>
+                        </div>
                         <div class="form-group-row">
                             <label asp-for="@Model.tagIds"></label>
                             <div class="col-sm-6 py-2">
@@ -60,10 +67,10 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-6 col-md-3">
-                                <button type="submit" class="btn btn-danger form-control">Delete</button>
+                                <button type="submit" class="btn btn-danger form-control">Finish</button>
                             </div>
                             <div class="col-6 col-md-3">
-                                <a asp-controller="Task" asp-action="Index">
+                                <a asp-controller="Task" asp-action="Index"
                                    class="btn btn-outline-primary border form-control">
                                     Back to List
                                 </a>
@@ -90,7 +97,9 @@
             mergetags_list: [
                 { value: 'First.Name', title: 'First Name' },
                 { value: 'Email', title: 'Email' },
-            ]
+            ],
+            theme: "advanced",
+            readonly: 1
         });
     </script>
     @{

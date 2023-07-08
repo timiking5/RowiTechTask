@@ -9,9 +9,13 @@
                 {
                     <span class="status new">@task.State.StateName</span>
                 }
-                else if (@task.State.StateName == "In Process" || @task.State.StateName == "On Review" || task.State.StateName == "Needs Rework")
+                else if (@task.State.StateName == "In Process")
                 {
                     <span class="status in-work">@task.State.StateName</span>
+                }
+                else if (task.State.StateName == "Finished")
+                {
+                    <span class="status finished">@task.State.StateName</span>
                 }
                 else
                 {
@@ -27,7 +31,7 @@
             {
                 <div class="payment">@string.Concat(@task.Amount, " ₽")</div>
             }
-            <p class="long-description">@TextFormation.TextToFormat(@task.LongDescription)</p>
+            <p class="long-description">@Html.Raw(TextFormation.TextToFormat(@task.LongDescription))</p>
             <div class="tags">
                 @foreach (var tag in task.Tags)
                 {
