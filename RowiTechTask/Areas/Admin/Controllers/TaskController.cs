@@ -52,10 +52,8 @@ namespace RowiTechTask.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpSert(TaskViewModel model)
         {
-            // TODO - Fix datetime.now issue
             model.Task.State = _unitOfWork.State.Get(x => x.StateName == "New");
             model.Task.StateId = model.Task.State.Id;
-            // model.Task.CreatedDate = DateTime.Now;
             if (model.Task.ExpirationDate < DateTime.Now)
             {
                 ModelState.AddModelError("Expiration date", "Expiration Date must be in future");

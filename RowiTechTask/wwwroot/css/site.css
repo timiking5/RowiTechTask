@@ -31,7 +31,8 @@ body {
 }
 
 .task-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: 6fr 6fr;
     place-items: center;
 }
 
