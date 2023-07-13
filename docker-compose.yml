@@ -10,8 +10,6 @@ services:
       dockerfile: RowiTechTask/Dockerfile
     ports:
       - 5000:80
-    environment:
-      - DB_CONNECTION_STRING=Server=sql_server2022;Database=MarketPlace;User Id=SA;Password=password@12345#
   appdb:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     container_name: sql_server2022
